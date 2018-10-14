@@ -96,10 +96,10 @@ public class MainTeleOp extends LinearOpMode{
         }
 
         if (gamepad2.right_bumper) {
-            jointMotor.setTargetPosition(JOINT_FOLDED);
+            jointMotor.setTargetPosition(JOINT_EXTENDED);
         }
         else if (gamepad2.left_bumper) {
-            jointMotor.setTargetPosition(JOINT_EXTENDED);
+            jointMotor.setTargetPosition(JOINT_FOLDED);
         }
 
         if (gamepad2.right_trigger != 0) {
