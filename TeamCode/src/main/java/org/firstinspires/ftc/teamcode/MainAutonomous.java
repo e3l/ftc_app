@@ -22,8 +22,8 @@ public abstract class MainAutonomous extends LinearOpMode {
     protected DcMotor jointMotor;
     protected DcMotor liftMotor;
 
-    // Servos
-    protected Servo colorServo;
+    // 180 degree Servos
+    protected Servo sampleServo;
 
     // Continuous rotation servos
     protected CRServo intakeServo;
@@ -49,7 +49,7 @@ public abstract class MainAutonomous extends LinearOpMode {
         jointMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         jointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        colorServo = hardwareMap.get(Servo.class, "colorServo");
+        sampleServo = hardwareMap.get(Servo.class, "sampleServo");
         intakeServo = hardwareMap.get(CRServo.class, "intakeServo");
 
         sampleColor = hardwareMap.get(LynxI2cColorRangeSensor.class, "sampleColor");
@@ -147,9 +147,10 @@ public abstract class MainAutonomous extends LinearOpMode {
         driveTrainMotorRight.setPower(.15);
         // Loop until both motors are no longer busy.
         while (driveTrainMotorLeft.isBusy() || driveTrainMotorRight.isBusy()) {
-            currentColor = Color.rgb(sampleColor.red(), sampleColor.green(), sampleColor.blue());
             if (sampleColor.red() > sampleColor.green() && sampleColor.green() > sampleColor.blue()) {
-
+                sampleServo.setPosition(1);
+                sleep(100);
+                sampleServo.setPosition(0);
             }
         }
         driveTrainMotorLeft.setPower(0);
