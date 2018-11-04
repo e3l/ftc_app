@@ -124,6 +124,7 @@ public abstract class MainAutonomous extends LinearOpMode {
         // The maximum speed of the motors.
         driveTrainMotorLeft.setPower(speed);
         driveTrainMotorRight.setPower(speed);
+
         // Loop until both motors are no longer busy.
         while (driveTrainMotorLeft.isBusy() || driveTrainMotorRight.isBusy()) ;
         driveTrainMotorLeft.setPower(0);
@@ -131,8 +132,6 @@ public abstract class MainAutonomous extends LinearOpMode {
     }
 
     protected void sample() {
-        int currentColor;
-
         driveTrainMotorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         driveTrainMotorRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         driveTrainMotorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -148,9 +147,11 @@ public abstract class MainAutonomous extends LinearOpMode {
         // Loop until both motors are no longer busy.
         while (driveTrainMotorLeft.isBusy() || driveTrainMotorRight.isBusy()) {
             if (sampleColor.red() > sampleColor.green() && sampleColor.green() > sampleColor.blue()) {
-                sampleServo.setPosition(1);
+                sampleServo.setPosition(.25);
                 sleep(100);
                 sampleServo.setPosition(0);
+                telemetry.addData("sample", "knock");
+                telemetry.update();
             }
         }
         driveTrainMotorLeft.setPower(0);
