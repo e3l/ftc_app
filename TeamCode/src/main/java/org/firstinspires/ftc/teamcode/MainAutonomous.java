@@ -23,7 +23,7 @@ public abstract class MainAutonomous extends LinearOpMode {
     // Servos
     protected Servo colorServo;
 
-    // Continuous rotation servos
+    // Continuous rotation servoso
     protected CRServo intakeServo;
 
     // Color sensor
@@ -35,6 +35,11 @@ public abstract class MainAutonomous extends LinearOpMode {
     protected static final double TURN_MULTIPLIER = 12.8;
     protected static final int JOINT_EXTENDED = 0; // TODO: Find position
     protected static final int JOINT_FOLDED = 0; // TODO: Find position
+
+    // More Constants - Field Numbers
+    protected static final int LANDER_TO_WALL_DEGREES = -135;
+    protected static final int LANDER_TO_SAMPLE_START_INCHES = 36;
+    protected static final int WALL_TO_SAMPLE_START_DEGREES = -135;
 
     protected void initOpMode() {
         driveTrainMotorLeft = hardwareMap.get(DcMotor.class, "driveTrainMotorLeft");
@@ -63,8 +68,7 @@ public abstract class MainAutonomous extends LinearOpMode {
     }
 
     protected void lower() {
-        // write code for lowering and
-        // raising the robot here
+        //TODO: write code for lowering and raising the robot here
     }
 
     /**
