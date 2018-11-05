@@ -37,9 +37,11 @@ public abstract class MainAutonomous extends LinearOpMode {
     protected static final int JOINT_FOLDED = 0; // TODO: Find position
 
     // More Constants - Field Numbers
-    protected static final int LANDER_TO_WALL_DEGREES = -135;
+    protected static final int LANDER_TO_NS_WALL_DEGREES = -135;
     protected static final int LANDER_TO_SAMPLE_START_INCHES = 36;
     protected static final int WALL_TO_SAMPLE_START_DEGREES = -135;
+    protected static final int SAMPLE_END_TO_PARALLEL_WALL_DEGREES = 45;
+    protected static final int SAMPLE_END_TO_SAMPLE_START_INCHES = 48;
 
     protected void initOpMode() {
         driveTrainMotorLeft = hardwareMap.get(DcMotor.class, "driveTrainMotorLeft");
