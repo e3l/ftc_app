@@ -1,41 +1,40 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
+@Autonomous
 public class DepotAutonomous extends MainAutonomous {
-
-
+    
     public void runOpMode() {
-        //lower the robot from the lander
-/*        lower();
+        // lower the robot from the lander
+        lower();
 
-        //move to the crater sample and get in position
-        turn(LANDER_TO_NS_WALL_DEGREES);
-        moveInch(LANDER_TO_SAMPLE_START_INCHES);
-        turn(NS_WALL_TO_SAMPLE_START_DEGREES);
+        // move to the crater sample and get in position
+        turn(LANDER_TO_NS_WALL_DEGREES, .15);
+        moveInch(LANDER_TO_SAMPLE_START_INCHES,.35);
+        turn(NS_WALL_TO_SAMPLE_START_DEGREES, .15);
 
-        //TODO: do the sample stuff
+        // Knock the sample
+        sample();
 
-        //move to the other sample
-        turn(SAMPLE_END_TO_PARALLEL_WALL_DEGREES);
-        moveInch(SAMPLE_END_TO_SAMPLE_START_INCHES);
-        turn(PARALLEL_WALL_TO_SAMPLE_START_DEGREES);
-
-        //TODO: do the sample stuff 2.0
-
-        //go to depot to place team market
-        turn(TURN_AROUND);
-        moveInch(SAMPLE_END_TO_EW_WALL_CENTER_INCHES);
-        turn(EW_WALL_CENTER_TO_DEPOT_DEGREES);
-        moveInch(EW_WALL_CENTER_TO_DEPOT_INCHES);
+        //go to depot to place team marker
+        moveInch(NSAMPLE_TO_NWALL_INCHES,.35);
+        turn(90, .15);
+        moveInch(60,.35);
         //TODO: team marker
 
-        //go and partially park in crater
-        turn(TURN_AROUND);
-        moveInch(DEPOT_TO_CRATER_INCHES);
+        //move to the other sample
+        turn(90, .15);
+        moveInch(DEPOT_TO_SSAMPLE_INCHES,.5);
+        turn(-SAMPLE_END_TO_PARALLEL_WALL_DEGREES,.15);
+
+        // Knock the sample
+        sample();
+
+        // go and partially park in crater (Spot closest to depot)
+        moveInch(-SAMPLE_LENGTH, .35);
+        turn(SAMPLE_END_TO_PARALLEL_WALL_DEGREES,.15);
+        moveInch(12,.35);
         jointPosition("extended");
-
-
-
-*/
-
     }
 }

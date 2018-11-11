@@ -50,6 +50,8 @@ public abstract class MainAutonomous extends LinearOpMode {
     protected static final int EW_WALL_CENTER_TO_DEPOT_DEGREES = -135;
     protected static final int EW_WALL_CENTER_TO_DEPOT_INCHES = 48;
     protected static final int DEPOT_TO_CRATER_INCHES = 72;
+    protected static final int NSAMPLE_TO_NWALL_INCHES = 24;
+    protected static final int DEPOT_TO_SSAMPLE_INCHES = 180;
 
     protected void initOpMode() {
         driveTrainMotorLeft = hardwareMap.get(DcMotor.class, "driveTrainMotorLeft");
