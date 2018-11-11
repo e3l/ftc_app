@@ -15,16 +15,13 @@ import com.qualcomm.robotcore.hardware.Servo;
 public abstract class MainAutonomous extends LinearOpMode {
 
     // Motors
-    protected DcMotor driveTrainMotorLeft;
-    protected DcMotor driveTrainMotorRight;
+    protected DcMotor rightDriveMotor;
+    protected DcMotor leftDriveMotor;
     protected DcMotor jointMotor;
     protected DcMotor liftMotor;
 
     // 180 degree Servos
     protected Servo sampleServo;
-
-    // Continuous rotation servoso
-    protected CRServo intakeServo;
 
     // Color sensor
     protected LynxI2cColorRangeSensor sampleColor;
@@ -51,8 +48,8 @@ public abstract class MainAutonomous extends LinearOpMode {
 
 
     protected void initOpMode() {
-        driveTrainMotorLeft = hardwareMap.get(DcMotor.class, "driveTrainMotorLeft");
-        driveTrainMotorRight = hardwareMap.get(DcMotor.class, "driveTrainMotorRight");
+        leftDriveMotor = hardwareMap.get(DcMotor.class, "leftDriveMotor");
+        rightDriveMotor = hardwareMap.get(DcMotor.class, "rightDriveMotor");
         jointMotor = hardwareMap.get(DcMotor.class, "jointMotor");
         liftMotor = hardwareMap.get(DcMotor.class, "liftMotor");
 
@@ -60,7 +57,6 @@ public abstract class MainAutonomous extends LinearOpMode {
         jointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         sampleServo = hardwareMap.get(Servo.class, "sampleServo");
-        intakeServo = hardwareMap.get(CRServo.class, "intakeServo");
 
         sampleColor = hardwareMap.get(LynxI2cColorRangeSensor.class, "sampleColor");
     }
@@ -71,9 +67,6 @@ public abstract class MainAutonomous extends LinearOpMode {
         } else {
             jointMotor.setTargetPosition(JOINT_FOLDED); // TODO: Add position
         }
-    }
-    protected void intake() {
-        intakeServo.setPower(1.0);
     }
 
     protected void lower() {
@@ -89,25 +82,25 @@ public abstract class MainAutonomous extends LinearOpMode {
      */
     protected void turn(int degrees, double speed) {
 
-        driveTrainMotorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        driveTrainMotorRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        driveTrainMotorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        driveTrainMotorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftDriveMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightDriveMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftDriveMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightDriveMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         // Multiply degrees input by a determined constant to tell motor how far to turn
-        driveTrainMotorLeft.setTargetPosition((int) (degrees * TURN_MULTIPLIER));
-        driveTrainMotorRight.setTargetPosition((int) (degrees * TURN_MULTIPLIER));
+        leftDriveMotor.setTargetPosition((int) (degrees * TURN_MULTIPLIER));
+        rightDriveMotor.setTargetPosition((int) (degrees * TURN_MULTIPLIER));
 
         // Maximum speed
-        driveTrainMotorLeft.setPower(speed);
-        driveTrainMotorRight.setPower(speed);
+        leftDriveMotor.setPower(speed);
+        rightDriveMotor.setPower(speed);
 
         // Loop until motors are no longer busy
-        while (driveTrainMotorLeft.isBusy() || driveTrainMotorRight.isBusy());
+        while (leftDriveMotor.isBusy() || rightDriveMotor.isBusy());
 
         // Shut off motors
-        driveTrainMotorLeft.setPower(0);
-        driveTrainMotorRight.setPower(0);
+        leftDriveMotor.setPower(0);
+        rightDriveMotor.setPower(0);
 
     }
 
@@ -121,40 +114,40 @@ public abstract class MainAutonomous extends LinearOpMode {
      */
     protected void moveInch(int inches, double speed) {
 
-        driveTrainMotorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        driveTrainMotorRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        driveTrainMotorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        driveTrainMotorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftDriveMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightDriveMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftDriveMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightDriveMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         // Multiply the distance we require by a determined constant to tell the motors how far to turn
-        driveTrainMotorLeft.setTargetPosition((int) (inches * -FORWARD_MULTIPLIER));
-        driveTrainMotorRight.setTargetPosition((int) (inches * FORWARD_MULTIPLIER));
+        leftDriveMotor.setTargetPosition((int) (inches * -FORWARD_MULTIPLIER));
+        rightDriveMotor.setTargetPosition((int) (inches * FORWARD_MULTIPLIER));
 
         // The maximum speed of the motors.
-        driveTrainMotorLeft.setPower(speed);
-        driveTrainMotorRight.setPower(speed);
+        leftDriveMotor.setPower(speed);
+        rightDriveMotor.setPower(speed);
 
         // Loop until both motors are no longer busy.
-        while (driveTrainMotorLeft.isBusy() || driveTrainMotorRight.isBusy()) ;
-        driveTrainMotorLeft.setPower(0);
-        driveTrainMotorRight.setPower(0);
+        while (leftDriveMotor.isBusy() || rightDriveMotor.isBusy()) ;
+        leftDriveMotor.setPower(0);
+        rightDriveMotor.setPower(0);
     }
 
     protected void sample() {
-        driveTrainMotorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        driveTrainMotorRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        driveTrainMotorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        driveTrainMotorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftDriveMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightDriveMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftDriveMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightDriveMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         // Multiply the distance we require by a determined constant to tell the motors how far to turn
-        driveTrainMotorLeft.setTargetPosition((int) (SAMPLE_LENGTH_INCHES * -FORWARD_MULTIPLIER));
-        driveTrainMotorRight.setTargetPosition((int) (SAMPLE_LENGTH_INCHES * FORWARD_MULTIPLIER));
+        leftDriveMotor.setTargetPosition((int) (SAMPLE_LENGTH_INCHES * -FORWARD_MULTIPLIER));
+        rightDriveMotor.setTargetPosition((int) (SAMPLE_LENGTH_INCHES * FORWARD_MULTIPLIER));
 
         // The maximum speed of the motors.
-        driveTrainMotorLeft.setPower(.15);
-        driveTrainMotorRight.setPower(.15);
+        leftDriveMotor.setPower(.15);
+        rightDriveMotor.setPower(.15);
         // Loop until both motors are no longer busy.
-        while (driveTrainMotorLeft.isBusy() || driveTrainMotorRight.isBusy()) {
+        while (leftDriveMotor.isBusy() || rightDriveMotor.isBusy()) {
             if (sampleColor.red() > sampleColor.green() && sampleColor.green() > sampleColor.blue()) {
                 sampleServo.setPosition(.25);
                 sleep(100);
@@ -163,8 +156,8 @@ public abstract class MainAutonomous extends LinearOpMode {
                 telemetry.update();
             }
         }
-        driveTrainMotorLeft.setPower(0);
-        driveTrainMotorRight.setPower(0);
+        leftDriveMotor.setPower(0);
+        rightDriveMotor.setPower(0);
     }
 
 }
