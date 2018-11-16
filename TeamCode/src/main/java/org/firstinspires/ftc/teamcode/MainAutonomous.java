@@ -21,13 +21,13 @@ public abstract class MainAutonomous extends LinearOpMode {
     protected DcMotor liftMotor;
 
     // Servos
-    protected Servo colorServo;
+    protected Servo sampleServo;
 
     // Continuous rotation servoso
     protected CRServo intakeServo;
 
     // Color sensor
-    protected LynxI2cColorRangeSensor colorSensor;
+    protected LynxI2cColorRangeSensor sampleColor;
 
     // Constants
     protected static final int FORWARD_MULTIPLIER = 88;
@@ -37,6 +37,7 @@ public abstract class MainAutonomous extends LinearOpMode {
     protected static final int JOINT_FOLDED = 0; // TODO: Find position
 
     // More Constants - Field Numbers
+    protected static final int SAMPLE_LENGTH = 54;
     protected static final int LANDER_TO_NS_WALL_DEGREES = -135;
     protected static final int LANDER_TO_SAMPLE_START_INCHES = 36;
     protected static final int NS_WALL_TO_SAMPLE_START_DEGREES = -135;
@@ -58,10 +59,10 @@ public abstract class MainAutonomous extends LinearOpMode {
         jointMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         jointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        colorServo = hardwareMap.get(Servo.class, "colorServo");
+        sampleServo = hardwareMap.get(Servo.class, "sampleServo");
         intakeServo = hardwareMap.get(CRServo.class, "intakeServo");
 
-        colorSensor = hardwareMap.get(LynxI2cColorRangeSensor.class, "colorSensor");
+        sampleColor = hardwareMap.get(LynxI2cColorRangeSensor.class, "sampleColor");
     }
 
     protected void jointPosition(String position) {
@@ -138,4 +139,30 @@ public abstract class MainAutonomous extends LinearOpMode {
         driveTrainMotorRight.setPower(0);
     }
 
+    protected void sample() {
+        driveTrainMotorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        driveTrainMotorRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        driveTrainMotorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        driveTrainMotorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        // Multiply the distance we require by a determined constant to tell the motors how far to turn
+        driveTrainMotorLeft.setTargetPosition((int) (SAMPLE_LENGTH * -FORWARD_MULTIPLIER));
+        driveTrainMotorRight.setTargetPosition((int) (SAMPLE_LENGTH * FORWARD_MULTIPLIER));
+
+        // The maximum speed of the motors.
+        driveTrainMotorLeft.setPower(.15);
+        driveTrainMotorRight.setPower(.15);
+        // Loop until both motors are no longer busy.
+        while (driveTrainMotorLeft.isBusy() || driveTrainMotorRight.isBusy()) {
+            if (sampleColor.red() > sampleColor.green() && sampleColor.green() > sampleColor.blue()) {
+                sampleServo.setPosition(.25);
+                sleep(100);
+                sampleServo.setPosition(0);
+                telemetry.addData("sample", "knock");
+                telemetry.update();
+            }
+        }
+        driveTrainMotorLeft.setPower(0);
+        driveTrainMotorRight.setPower(0);
+    }
 }

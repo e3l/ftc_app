@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
+@Autonomous
 public class CraterAutonomous extends MainAutonomous {
 
 
@@ -12,14 +15,16 @@ public class CraterAutonomous extends MainAutonomous {
         moveInch(LANDER_TO_SAMPLE_START_INCHES);
         turn(NS_WALL_TO_SAMPLE_START_DEGREES);
 
-        //TODO: do the sample stuff
+        //sample
+        sample();
 
         //move to the other sample
         turn(SAMPLE_END_TO_PARALLEL_WALL_DEGREES);
         moveInch(SAMPLE_END_TO_SAMPLE_START_INCHES);
         turn(PARALLEL_WALL_TO_SAMPLE_START_DEGREES);
 
-        //TODO: do the sample stuff 2.0
+        //sample again
+        sample();
 
         //go to depot to place team market
         turn(TURN_AROUND);
