@@ -172,31 +172,6 @@ public abstract class MainAutonomous extends LinearOpMode {
         rightDriveMotor.setPower(0);
     }
 
-    protected void sample() {
-        driveTrainMotorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        driveTrainMotorRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        driveTrainMotorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        driveTrainMotorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        // Multiply the distance we require by a determined constant to tell the motors how far to turn
-        driveTrainMotorLeft.setTargetPosition((int) (SAMPLE_LENGTH_INCHES * -FORWARD_MULTIPLIER));
-        driveTrainMotorRight.setTargetPosition((int) (SAMPLE_LENGTH_INCHES * FORWARD_MULTIPLIER));
-
-        // The maximum speed of the motors.
-        driveTrainMotorLeft.setPower(.15);
-        driveTrainMotorRight.setPower(.15);
-        // Loop until both motors are no longer busy.
-        while (driveTrainMotorLeft.isBusy() || driveTrainMotorRight.isBusy()) {
-            if (sampleColor.red() > sampleColor.green() && sampleColor.green() > sampleColor.blue()) {
-                sampleServo.setPosition(.25);
-                sleep(100);
-                sampleServo.setPosition(0);
-                telemetry.addData("sample", "knock");
-                telemetry.update();
-            }
-        }
-        driveTrainMotorLeft.setPower(0);
-        driveTrainMotorRight.setPower(0);
-    }
 
 }
