@@ -38,6 +38,7 @@ public abstract class MainAutonomous extends LinearOpMode {
     protected static final int JOINT_FOLDED = 0; // TODO: Find position
 
 
+
     // More Constants - Field Numbers
     protected static final int SAMPLE_LENGTH_INCHES = 54;
     protected static final int LANDER_TO_NS_WALL_DEGREES = -135;
@@ -52,7 +53,6 @@ public abstract class MainAutonomous extends LinearOpMode {
     protected static final int EW_WALL_CENTER_TO_DEPOT_DEGREES_DA = -45;
     protected static final int EW_WALL_CENTER_TO_DEPOT_INCHES = 48;
     protected static final int DEPOT_TO_CRATER_INCHES = 72;
-
 
 
     protected void initOpMode() {
@@ -179,8 +179,8 @@ public abstract class MainAutonomous extends LinearOpMode {
         driveTrainMotorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         // Multiply the distance we require by a determined constant to tell the motors how far to turn
-        driveTrainMotorLeft.setTargetPosition((int) (SAMPLE_LENGTH * -FORWARD_MULTIPLIER));
-        driveTrainMotorRight.setTargetPosition((int) (SAMPLE_LENGTH * FORWARD_MULTIPLIER));
+        driveTrainMotorLeft.setTargetPosition((int) (SAMPLE_LENGTH_INCHES * -FORWARD_MULTIPLIER));
+        driveTrainMotorRight.setTargetPosition((int) (SAMPLE_LENGTH_INCHES * FORWARD_MULTIPLIER));
 
         // The maximum speed of the motors.
         driveTrainMotorLeft.setPower(.15);
