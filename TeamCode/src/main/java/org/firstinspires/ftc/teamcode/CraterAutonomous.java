@@ -29,7 +29,7 @@ public class CraterAutonomous extends MainAutonomous {
         //go to depot to place team market
         turn(TURN_AROUND);
         moveInch(SAMPLE_END_TO_EW_WALL_CENTER_INCHES);
-        turn(EW_WALL_CENTER_TO_DEPOT_DEGREES);
+        turn(EW_WALL_CENTER_TO_DEPOT_DEGREES_CA);
         moveInch(EW_WALL_CENTER_TO_DEPOT_INCHES);
         //TODO: team marker
 
