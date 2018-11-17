@@ -14,12 +14,14 @@ public class MainTeleOp extends LinearOpMode{
     protected DcMotor rightDriveMotor;
     protected DcMotor leftDriveMotor;
     protected DcMotor intakeSlideMotor;
-    protected DcMotor liftSlideMotor;
+    protected DcMotor liftMotor;
     protected DcMotor jointMotor;
 
 
     // Servos
     protected Servo depositServo;
+
+    // Continuous Rotation Servos
     protected CRServo intakeServo;
 
     // Color sensors
@@ -34,7 +36,7 @@ public class MainTeleOp extends LinearOpMode{
         rightDriveMotor = hardwareMap.get(DcMotor.class, "rightDriveMotor");
         leftDriveMotor = hardwareMap.get(DcMotor.class, "leftDriveMotor");
         intakeSlideMotor = hardwareMap.get(DcMotor.class, "intakeSlideMotor");
-        liftSlideMotor = hardwareMap.get(DcMotor.class, "liftSlideMotor");
+        liftMotor = hardwareMap.get(DcMotor.class, "liftMotor");
         jointMotor = hardwareMap.get(DcMotor.class, "jointMotor");
 
         jointMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -43,7 +45,7 @@ public class MainTeleOp extends LinearOpMode{
         rightDriveMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftDriveMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         intakeSlideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        liftSlideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         jointMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //initialize the servos
