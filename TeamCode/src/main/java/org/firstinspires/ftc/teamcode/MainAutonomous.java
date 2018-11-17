@@ -41,7 +41,7 @@ public abstract class MainAutonomous extends LinearOpMode {
     protected static final int LANDER_TO_NS_WALL_DEGREES = -135;
     protected static final int LANDER_TO_SAMPLE_START_INCHES = 36;
     protected static final int NS_WALL_TO_SAMPLE_START_DEGREES = -135;
-    protected static final int SAMPLE_END_TO_PARALLEL_WALL_DEGREES = 45;
+    protected static final int SAMPLE_END_TO_PARALLEL_WALL_DEGREES = -45;
     protected static final int SAMPLE_END_TO_SAMPLE_START_INCHES = 48;
     protected static final int PARALLEL_WALL_TO_SAMPLE_START_DEGREES = -45;
     protected static final int TURN_AROUND = 180;
