@@ -5,8 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 @Autonomous
 public class DepotAutonomous extends MainAutonomous {
 
-
     public void runOpMode() {
+
         //lower the robot from the lander
         lower();
 
@@ -23,7 +23,7 @@ public class DepotAutonomous extends MainAutonomous {
         moveInch(SAMPLE_END_TO_SAMPLE_START_INCHES, 0.4);
         turn(-PARALLEL_WALL_TO_SAMPLE_START_DEGREES, 0.4);
 
-        //o the sample stuff 2.0
+        //do the sample stuff 2.0
         sample();
 
         //go to depot to place team market
@@ -37,6 +37,5 @@ public class DepotAutonomous extends MainAutonomous {
         turn(TURN_AROUND, 0.4);
         moveInch(DEPOT_TO_CRATER_INCHES, 0.4);
         jointPosition("extended");
-
     }
 }
