@@ -13,15 +13,13 @@ public class MainTeleOp extends LinearOpMode{
     // Motors
     protected DcMotor rightDriveMotor;
     protected DcMotor leftDriveMotor;
-    protected DcMotor intakeSlideMotor;
     protected DcMotor liftMotor;
     protected DcMotor jointMotor;
+    protected DcMotor basketMotor;
 
 
     // Servos
     protected Servo depositServo;
-
-    // Continuous Rotation Servos
     protected CRServo intakeServo;
 
     // Color sensors
@@ -35,18 +33,20 @@ public class MainTeleOp extends LinearOpMode{
         //initialize all the motors
         rightDriveMotor = hardwareMap.get(DcMotor.class, "rightDriveMotor");
         leftDriveMotor = hardwareMap.get(DcMotor.class, "leftDriveMotor");
-        intakeSlideMotor = hardwareMap.get(DcMotor.class, "intakeSlideMotor");
         liftMotor = hardwareMap.get(DcMotor.class, "liftMotor");
         jointMotor = hardwareMap.get(DcMotor.class, "jointMotor");
+        basketMotor = hardwareMap.get(DcMotor.class, "intakeSlideMotor");
+
 
         jointMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         jointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         rightDriveMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftDriveMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        intakeSlideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         jointMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        basketMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
 
         //initialize the servos
         depositServo = hardwareMap.get(Servo.class, "depositServo");
@@ -73,29 +73,40 @@ public class MainTeleOp extends LinearOpMode{
     // slow variable to allow for 'slowmode' - allowing the robot to go slower.
     protected double slow = 1.66;
 
-//controller 1
+    //controller 1
+    // Direction variable to change 'front' perspective
+    protected int direction = 1;
+
     private void drive() {
+        if (gamepad1.dpad_up) {
+            direction = 1;
+        }
+        if (gamepad1.dpad_down) {
+            direction = -1;
+        }
+
         if (gamepad1.right_bumper) {
             slow = 1;
         }
         if (gamepad1.left_bumper) {
-            slow = 1.66;
+            slow = 2;
         }
 
-        rightDriveMotor.setPower(gamepad1.left_stick_y / slow);
-        leftDriveMotor.setPower(-1 * gamepad1.left_stick_y / slow);
+        rightDriveMotor.setPower(-1 * direction * gamepad1.left_stick_y / slow);
+        leftDriveMotor.setPower(direction * gamepad1.left_stick_y / slow);
+        // leftDrive is -1 due to the fact that the motors are orientated differently.
 
         if (gamepad1.right_stick_x != 0) {
-            rightDriveMotor.setPower(gamepad1.right_stick_x / slow * 2);
-            leftDriveMotor.setPower(gamepad1.right_stick_x / slow * 2);
+            rightDriveMotor.setPower((-8 * gamepad1.right_stick_x) / slow);
+            leftDriveMotor.setPower((-8 * gamepad1.right_stick_x) / slow);
         }
     }
 
-//controller 2
+    //controller 2
     private void intake() {
-       if (gamepad2.left_stick_y != 0) {
-            intakeSlideMotor.setPower(gamepad2.left_stick_y);
-        }
+//        if (gamepad2.left_stick_y != 0) {
+//        intakeSlideMotor.setPower(gamepad2.left_stick_y);
+//        }
 
         if (gamepad2.right_bumper) {
             jointMotor.setTargetPosition(JOINT_EXTENDED);
@@ -109,13 +120,27 @@ public class MainTeleOp extends LinearOpMode{
         }
     }
 
-//controller 2
+    //controller 2
     private void lift() {
+        liftMotor.setPower(gamepad2.right_stick_y);
+        int x = 5;
+        if (gamepad2.right_stick_y > 0) {
+            depositServo.setPosition(x);
+            x++;
+        }
 
+        if (gamepad2.right_stick_y < 0) {
+            depositServo.setPosition(x);
+            x--;
+        }
     }
 
-//controller 2
+    //controller 2
     private void deposit() {
-
+        if (gamepad2.a) {
+            double position = depositServo.getPosition();
+            depositServo.setPosition(position + 150);
+            depositServo.setPosition(position);
+        }
     }
 }
