@@ -89,7 +89,7 @@ public class MainTeleOp extends LinearOpMode{
             slow = 1;
         }
         if (gamepad1.left_bumper) {
-            slow = 2;
+            slow = 1.66;
         }
 
         rightDriveMotor.setPower(-1 * direction * gamepad1.left_stick_y / slow);
