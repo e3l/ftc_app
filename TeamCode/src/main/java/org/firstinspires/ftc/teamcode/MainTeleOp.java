@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp
 
@@ -15,10 +14,9 @@ public class MainTeleOp extends LinearOpMode{
     protected DcMotor leftDriveMotor;
     protected DcMotor liftMotor;
     protected DcMotor jointMotor;
-
+    protected DcMotor horizontalSlideMotor;
 
     // Servos
-
     protected CRServo intakeServo;
 
     // Color sensors
@@ -34,7 +32,7 @@ public class MainTeleOp extends LinearOpMode{
         leftDriveMotor = hardwareMap.get(DcMotor.class, "leftDriveMotor");
         liftMotor = hardwareMap.get(DcMotor.class, "liftMotor");
         jointMotor = hardwareMap.get(DcMotor.class, "jointMotor");
-
+        horizontalSlideMotor = hardwareMap.get(DcMotor.class, "horizontalSlideMotor");
 
         jointMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         jointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -43,15 +41,13 @@ public class MainTeleOp extends LinearOpMode{
         leftDriveMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         jointMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
+        horizontalSlideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //initialize the servos
         intakeServo = hardwareMap.get(CRServo.class, "intakeServo");
 
         // Sensors initialization
         sampleSensor = hardwareMap.get(LynxI2cColorRangeSensor.class, "sampleSensor");
-
-
     }
 
     public void runOpMode() {
@@ -112,6 +108,8 @@ public class MainTeleOp extends LinearOpMode{
         }
 
         intakeServo.setPower(gamepad2.right_trigger);
+
+        horizontalSlideMotor.setPower(gamepad2.left_stick_y);
     }
 
     //controller 2
