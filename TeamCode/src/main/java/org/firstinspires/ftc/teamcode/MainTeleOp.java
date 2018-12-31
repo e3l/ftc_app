@@ -19,7 +19,6 @@ public class MainTeleOp extends LinearOpMode{
 
 
     // Servos
-    protected Servo depositServo;
     protected CRServo intakeServo;
 
     // Color sensors
@@ -49,7 +48,6 @@ public class MainTeleOp extends LinearOpMode{
 
 
         //initialize the servos
-        depositServo = hardwareMap.get(Servo.class, "depositServo");
         intakeServo = hardwareMap.get(CRServo.class, "intakeServo");
 
         // Sensors initialization
@@ -65,7 +63,6 @@ public class MainTeleOp extends LinearOpMode{
             drive();
             intake();
             lift();
-            deposit();
 
         }
     }
@@ -123,24 +120,7 @@ public class MainTeleOp extends LinearOpMode{
     //controller 2
     private void lift() {
         liftMotor.setPower(gamepad2.right_stick_y);
-        int x = 5;
-        if (gamepad2.right_stick_y > 0) {
-            depositServo.setPosition(x);
-            x++;
-        }
-
-        if (gamepad2.right_stick_y < 0) {
-            depositServo.setPosition(x);
-            x--;
-        }
     }
 
     //controller 2
-    private void deposit() {
-        if (gamepad2.a) {
-            double position = depositServo.getPosition();
-            depositServo.setPosition(position + 150);
-            depositServo.setPosition(position);
-        }
-    }
 }

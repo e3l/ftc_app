@@ -172,6 +172,4 @@ public abstract class MainAutonomous extends LinearOpMode {
         rightDriveMotor.setPower(0);
     }
 
-
-
 }
