@@ -14,6 +14,7 @@ public class MainTeleOp extends LinearOpMode{
     protected DcMotor leftDriveMotor;
     protected DcMotor liftMotor;
     protected DcMotor jointMotor;
+    protected DcMotor jointMotor2;
     protected DcMotor horizontalSlideMotor;
 
     // Servos
@@ -102,9 +103,11 @@ public class MainTeleOp extends LinearOpMode{
 
         if (gamepad2.right_bumper) {
             jointMotor.setTargetPosition(JOINT_EXTENDED);
+            jointMotor2.setTargetPosition(-JOINT_EXTENDED);
         }
         else if (gamepad2.left_bumper) {
             jointMotor.setTargetPosition(JOINT_FOLDED);
+            jointMotor2.setTargetPosition(-JOINT_FOLDED);
         }
 
         intakeServo.setPower(gamepad2.right_trigger);
