@@ -22,11 +22,12 @@ public abstract class MainAutonomous extends LinearOpMode {
     protected DcMotor jointMotor;
     protected DcMotor liftMotor;
 
-    // Continuous rotation servoso
+    // Continuous rotation servos
     protected CRServo intakeServo;
 
     // 180 degree Servos
     protected Servo sampleServo;
+    protected Servo markerServo;
 
     // Color sensor
     protected LynxI2cColorRangeSensor sampleColor;
@@ -41,18 +42,15 @@ public abstract class MainAutonomous extends LinearOpMode {
 
     // More Constants - Field Numbers
     protected static final int SAMPLE_LENGTH_INCHES = 54;
-    protected static final int LANDER_TO_NS_WALL_DEGREES = -135;
-    protected static final int LANDER_TO_SAMPLE_START_INCHES = 36;
-    protected static final int NS_WALL_TO_SAMPLE_START_DEGREES = -135;
+    protected static final int LANDER_TO_SAMPLE_START_DEGREES = 30;
+    protected static final int LANDER_TO_SAMPLE_START_INCHES = 38;
+    protected static final int TURN_TO_SAMPLE_DEGREES = 135;
     protected static final int SAMPLE_END_TO_PARALLEL_WALL_DEGREES = -45;
     protected static final int SAMPLE_END_TO_SAMPLE_START_INCHES = 48;
     protected static final int PARALLEL_WALL_TO_SAMPLE_START_DEGREES = -45;
-    protected static final int TURN_AROUND = 180;
-    protected static final int SAMPLE_END_TO_EW_WALL_CENTER_INCHES = 60;
-    protected static final int EW_WALL_CENTER_TO_DEPOT_DEGREES_CA = -135;
-    protected static final int EW_WALL_CENTER_TO_DEPOT_DEGREES_DA = -45;
-    protected static final int EW_WALL_CENTER_TO_DEPOT_INCHES = 48;
-    protected static final int DEPOT_TO_CRATER_INCHES = 72;
+    protected static final int TURN_AROUND_DEGREES = 180;
+    protected static final int SAMPLE_END_TO_DEPOT = 72;
+    protected static final int DEPOT_TO_CRATER_INCHES = 84;
 
 
     protected void initOpMode() {
@@ -64,9 +62,10 @@ public abstract class MainAutonomous extends LinearOpMode {
         jointMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         jointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        sampleServo = hardwareMap.get(Servo.class, "sampleServo");
-
         intakeServo = hardwareMap.get(CRServo.class, "intakeServo");
+
+        sampleServo = hardwareMap.get(Servo.class, "sampleServo");
+        markerServo = hardwareMap.get(Servo.class,"markerServo");
 
         sampleColor = hardwareMap.get(LynxI2cColorRangeSensor.class, "sampleColor");
     }
@@ -80,7 +79,15 @@ public abstract class MainAutonomous extends LinearOpMode {
     }
 
     protected void lower() {
-        //TODO: write code for lowering and raising the robot here
+        liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        liftMotor.setTargetPosition(1000);
+        liftMotor.setPower(1);
+
+        while (liftMotor.isBusy()) {}
+
+        liftMotor.setPower(0);
     }
 
     /**
@@ -172,4 +179,9 @@ public abstract class MainAutonomous extends LinearOpMode {
         rightDriveMotor.setPower(0);
     }
 
+    protected void marker() {
+        markerServo.setPosition(0);
+        sleep(1000);
+        markerServo.setPosition(-1);
+    }
 }
