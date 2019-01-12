@@ -5,18 +5,17 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp
 
-public class MainTeleOp extends LinearOpMode{
+public class MainTeleOp extends LinearOpMode {
     // Motors
     protected DcMotor rightDriveMotor;
     protected DcMotor leftDriveMotor;
     protected DcMotor liftMotor;
     protected DcMotor jointMotor;
-    protected DcMotor basketMotor;
-
+    protected DcMotor jointMotor2;
+    protected DcMotor horizontalSlideMotor;
 
     // Servos
     protected CRServo intakeServo;
@@ -34,36 +33,35 @@ public class MainTeleOp extends LinearOpMode{
         leftDriveMotor = hardwareMap.get(DcMotor.class, "leftDriveMotor");
         liftMotor = hardwareMap.get(DcMotor.class, "liftMotor");
         jointMotor = hardwareMap.get(DcMotor.class, "jointMotor");
-        basketMotor = hardwareMap.get(DcMotor.class, "intakeSlideMotor");
-
+        jointMotor2 = hardwareMap.get(DcMotor.class,"jointMotor2");
+        horizontalSlideMotor = hardwareMap.get(DcMotor.class, "horizontalSlideMotor");
 
         jointMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         jointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        jointMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        jointMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         rightDriveMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftDriveMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         jointMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        basketMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
+        jointMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        horizontalSlideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //initialize the servos
         intakeServo = hardwareMap.get(CRServo.class, "intakeServo");
 
         // Sensors initialization
         sampleSensor = hardwareMap.get(LynxI2cColorRangeSensor.class, "sampleSensor");
-
-
     }
 
     public void runOpMode() {
         initOpMode();
         waitForStart();
-        while(opModeIsActive()) {
+        while (opModeIsActive()) {
             drive();
             intake();
             lift();
-
         }
     }
 
@@ -101,26 +99,40 @@ public class MainTeleOp extends LinearOpMode{
 
     //controller 2
     private void intake() {
-//        if (gamepad2.left_stick_y != 0) {
-//        intakeSlideMotor.setPower(gamepad2.left_stick_y);
-//        }
-
         if (gamepad2.right_bumper) {
             jointMotor.setTargetPosition(JOINT_EXTENDED);
-        }
-        else if (gamepad2.left_bumper) {
+            jointMotor2.setTargetPosition(-JOINT_EXTENDED);
+        } else if (gamepad2.left_bumper) {
             jointMotor.setTargetPosition(JOINT_FOLDED);
+            jointMotor2.setTargetPosition(-JOINT_FOLDED);
         }
 
-        if (gamepad2.right_trigger != 0) {
-            intakeServo.setPower(gamepad2.right_trigger);
+        if (gamepad2.dpad_up) {
+            jointMotor.setPower(1);
+            jointMotor2.setPower(-1);
+        } else if (gamepad2.dpad_down) {
+            jointMotor.setPower(-1);
+            jointMotor2.setPower(1);
         }
+
+        intakeServo.setPower(gamepad2.right_trigger);
+
+        horizontalSlideMotor.setPower(gamepad2.right_stick_y);
     }
 
     //controller 2
     private void lift() {
-        liftMotor.setPower(gamepad2.right_stick_y);
+        liftMotor.setPower(gamepad2.left_stick_y);
     }
-
+  
+/* New design automatically deposits - no method needed
     //controller 2
+    private void deposit() {
+        if (gamepad2.a) {
+            double position = depositServo.getPosition();
+            depositServo.setPosition(position + 150);
+            depositServo.setPosition(position);
+        }
+    }
+*/
 }
