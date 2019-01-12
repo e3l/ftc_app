@@ -97,10 +97,6 @@ public class MainTeleOp extends LinearOpMode{
 
     //controller 2
     private void intake() {
-//        if (gamepad2.left_stick_y != 0) {
-//        intakeSlideMotor.setPower(gamepad2.left_stick_y);
-//        }
-
         if (gamepad2.right_bumper) {
             jointMotor.setTargetPosition(JOINT_EXTENDED);
             jointMotor2.setTargetPosition(-JOINT_EXTENDED);
@@ -110,14 +106,22 @@ public class MainTeleOp extends LinearOpMode{
             jointMotor2.setTargetPosition(-JOINT_FOLDED);
         }
 
+        if (gamepad2.dpad_up) {
+            jointMotor.setPower(1);
+            jointMotor2.setPower(-1);
+        } else if (gamepad2.dpad_down) {
+            jointMotor.setPower(-1);
+            jointMotor2.setPower(1);
+        }
+
         intakeServo.setPower(gamepad2.right_trigger);
 
-        horizontalSlideMotor.setPower(gamepad2.left_stick_y);
+        horizontalSlideMotor.setPower(gamepad2.right_stick_y);
     }
 
     //controller 2
     private void lift() {
-        liftMotor.setPower(gamepad2.right_stick_y);
+        liftMotor.setPower(gamepad2.left_stick_y);
     }
 
 
