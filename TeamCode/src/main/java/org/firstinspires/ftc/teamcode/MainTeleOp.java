@@ -43,6 +43,7 @@ public class MainTeleOp extends LinearOpMode{
         liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         jointMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         horizontalSlideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        basketMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //initialize the servos
         intakeServo = hardwareMap.get(CRServo.class, "intakeServo");
@@ -58,8 +59,6 @@ public class MainTeleOp extends LinearOpMode{
             drive();
             intake();
             lift();
-
-
         }
     }
 
@@ -123,8 +122,7 @@ public class MainTeleOp extends LinearOpMode{
     private void lift() {
         liftMotor.setPower(gamepad2.left_stick_y);
     }
-
-
+  
 /* New design automatically deposits - no method needed
     //controller 2
     private void deposit() {
@@ -135,4 +133,3 @@ public class MainTeleOp extends LinearOpMode{
         }
     }
 */
-}
