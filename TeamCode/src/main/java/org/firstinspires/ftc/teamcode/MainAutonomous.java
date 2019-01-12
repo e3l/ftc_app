@@ -71,11 +71,11 @@ public abstract class MainAutonomous extends LinearOpMode {
     }
 
     protected void jointPosition(String position) {
-        if (position.equals("extended")) {
-            jointMotor.setTargetPosition(JOINT_EXTENDED); // TODO: Add position
-        } else {
-            jointMotor.setTargetPosition(JOINT_FOLDED); // TODO: Add position
-        }
+//        if (position.equals("extended")) {
+//            jointMotor.setTargetPosition(JOINT_EXTENDED); // TODO: Add position
+//        } else {
+//            jointMotor.setTargetPosition(JOINT_FOLDED); // TODO: Add position
+//        }
     }
 
     protected void lower() {
