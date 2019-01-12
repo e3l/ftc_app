@@ -33,10 +33,13 @@ public class MainTeleOp extends LinearOpMode {
         leftDriveMotor = hardwareMap.get(DcMotor.class, "leftDriveMotor");
         liftMotor = hardwareMap.get(DcMotor.class, "liftMotor");
         jointMotor = hardwareMap.get(DcMotor.class, "jointMotor");
+        jointMotor2 = hardwareMap.get(DcMotor.class,"jointMotor2");
         horizontalSlideMotor = hardwareMap.get(DcMotor.class, "horizontalSlideMotor");
 
         jointMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         jointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        jointMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        jointMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         rightDriveMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftDriveMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
