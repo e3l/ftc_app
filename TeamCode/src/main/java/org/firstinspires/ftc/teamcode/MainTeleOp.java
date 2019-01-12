@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 @TeleOp
 
-public class MainTeleOp extends LinearOpMode{
+public class MainTeleOp extends LinearOpMode {
     // Motors
     protected DcMotor rightDriveMotor;
     protected DcMotor leftDriveMotor;
@@ -43,7 +43,6 @@ public class MainTeleOp extends LinearOpMode{
         liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         jointMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         horizontalSlideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        basketMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //initialize the servos
         intakeServo = hardwareMap.get(CRServo.class, "intakeServo");
@@ -55,7 +54,7 @@ public class MainTeleOp extends LinearOpMode{
     public void runOpMode() {
         initOpMode();
         waitForStart();
-        while(opModeIsActive()) {
+        while (opModeIsActive()) {
             drive();
             intake();
             lift();
@@ -99,8 +98,7 @@ public class MainTeleOp extends LinearOpMode{
         if (gamepad2.right_bumper) {
             jointMotor.setTargetPosition(JOINT_EXTENDED);
             jointMotor2.setTargetPosition(-JOINT_EXTENDED);
-        }
-        else if (gamepad2.left_bumper) {
+        } else if (gamepad2.left_bumper) {
             jointMotor.setTargetPosition(JOINT_FOLDED);
             jointMotor2.setTargetPosition(-JOINT_FOLDED);
         }
@@ -133,3 +131,4 @@ public class MainTeleOp extends LinearOpMode{
         }
     }
 */
+}
