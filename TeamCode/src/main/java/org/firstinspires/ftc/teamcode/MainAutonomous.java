@@ -36,8 +36,8 @@ public abstract class MainAutonomous extends LinearOpMode {
     // Multiplier Constants
     protected static final int FORWARD_MULTIPLIER = 88;
     protected static final double TURN_MULTIPLIER = 12.8;
-    protected static final int JOINT_EXTENDED = 0; // TODO: Find position
-    protected static final int JOINT_FOLDED = 0; // TODO: Find position
+    protected static final int JOINT_EXTENDED = 90;
+    protected static final int JOINT_FOLDED = 0;
 
 
 
@@ -76,11 +76,33 @@ public abstract class MainAutonomous extends LinearOpMode {
 
     protected void jointPosition(String position) {
         if (position.equals("extended")) {
-            jointMotor.setTargetPosition(JOINT_EXTENDED);
-            jointMotor2.setTargetPosition(-JOINT_EXTENDED);
+            jointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            jointMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            jointMotor.setTargetPosition(-JOINT_EXTENDED);
+            jointMotor2.setTargetPosition(JOINT_EXTENDED);
+
+            jointMotor.setPower(.5);
+            jointMotor2.setPower(.5);
+
+            while (jointMotor.isBusy() || jointMotor2.isBusy()) {}
+
+            jointMotor.setPower(0);
+            jointMotor2.setPower(0);
         } else if (position.equals("folded")) {
+            jointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            jointMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
             jointMotor.setTargetPosition(JOINT_FOLDED);
-            jointMotor2.setTargetPosition(-JOINT_FOLDED);
+            jointMotor2.setTargetPosition(JOINT_FOLDED);
+
+            jointMotor.setPower(.5);
+            jointMotor2.setPower(.5);
+
+            while(jointMotor.isBusy() || jointMotor2.isBusy()) {}
+
+            jointMotor.setPower(0);
+            jointMotor2.setPower(0);
         }
     }
 
