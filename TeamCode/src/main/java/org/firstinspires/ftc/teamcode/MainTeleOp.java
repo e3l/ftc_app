@@ -115,6 +115,7 @@ public class MainTeleOp extends LinearOpMode {
             jointMotor2.setPower(1);
         }
 
+        intakeServo.setPower(-gamepad2.left_trigger);
         intakeServo.setPower(gamepad2.right_trigger);
 
         horizontalSlideMotor.setPower(gamepad2.right_stick_y);
