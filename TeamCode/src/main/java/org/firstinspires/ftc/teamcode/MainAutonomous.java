@@ -20,6 +20,7 @@ public abstract class MainAutonomous extends LinearOpMode {
     protected DcMotor rightDriveMotor;
     protected DcMotor leftDriveMotor;
     protected DcMotor jointMotor;
+    protected DcMotor jointMotor2;
     protected DcMotor liftMotor;
 
     // Continuous rotation servos
@@ -57,10 +58,13 @@ public abstract class MainAutonomous extends LinearOpMode {
         leftDriveMotor = hardwareMap.get(DcMotor.class, "leftDriveMotor");
         rightDriveMotor = hardwareMap.get(DcMotor.class, "rightDriveMotor");
         jointMotor = hardwareMap.get(DcMotor.class, "jointMotor");
+        jointMotor2 = hardwareMap.get(DcMotor.class,"jointMotor2");
         liftMotor = hardwareMap.get(DcMotor.class, "liftMotor");
 
         jointMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         jointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        jointMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        jointMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         intakeServo = hardwareMap.get(CRServo.class, "intakeServo");
 
@@ -71,11 +75,13 @@ public abstract class MainAutonomous extends LinearOpMode {
     }
 
     protected void jointPosition(String position) {
-//        if (position.equals("extended")) {
-//            jointMotor.setTargetPosition(JOINT_EXTENDED); // TODO: Add position
-//        } else {
-//            jointMotor.setTargetPosition(JOINT_FOLDED); // TODO: Add position
-//        }
+        if (position.equals("extended")) {
+            jointMotor.setTargetPosition(JOINT_EXTENDED);
+            jointMotor2.setTargetPosition(-JOINT_EXTENDED);
+        } else if (position.equals("folded")) {
+            jointMotor.setTargetPosition(JOINT_FOLDED);
+            jointMotor2.setTargetPosition(-JOINT_FOLDED);
+        }
     }
 
     protected void lower() {
