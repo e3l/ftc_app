@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import java.security.DomainCombiner;
+
 @TeleOp
 
 public class MainTeleOp extends LinearOpMode {
@@ -24,8 +26,8 @@ public class MainTeleOp extends LinearOpMode {
     protected LynxI2cColorRangeSensor sampleSensor;
 
     //constants
-    public static final int JOINT_FOLDED = 0; //TODO
-    public static final int JOINT_EXTENDED = 0; //TODO
+    public static final int JOINT_FOLDED = 0;
+    public static final int JOINT_EXTENDED = 90;
 
     private void initOpMode() {
         //initialize all the motors
@@ -97,47 +99,87 @@ public class MainTeleOp extends LinearOpMode {
         }
     }
 
+    // A 'direction' variable for toggling intake
+    char intakeDirection = 'S'; // S for stop, I for intake, P for push
+
     //controller 2
     private void intake() {
-        if (gamepad2.right_bumper) {
+        if (gamepad2.dpad_up) {
             jointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             jointMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             jointMotor.setTargetPosition(JOINT_EXTENDED);
             jointMotor2.setTargetPosition(-JOINT_EXTENDED);
-        } else if (gamepad2.left_bumper) {
+
+            jointMotor.setPower(.5);
+            jointMotor2.setPower(.5);
+
+            while (jointMotor.isBusy() || jointMotor2.isBusy()) {}
+
+            jointMotor.setPower(0);
+            jointMotor2.setPower(0);
+        } else if (gamepad2.dpad_down) {
+            jointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            jointMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
             jointMotor.setTargetPosition(JOINT_FOLDED);
             jointMotor2.setTargetPosition(-JOINT_FOLDED);
+
+            jointMotor.setPower(.5);
+            jointMotor2.setPower(.5);
+
+            while (jointMotor.isBusy() || jointMotor2.isBusy()) {}
+
+            jointMotor.setPower(0);
+            jointMotor2.setPower(0);
+        } else if (gamepad2.left_stick_y != 0) {
+            jointMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            jointMotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            jointMotor.setPower(gamepad2.left_stick_y);
+            jointMotor2.setPower(-gamepad2.left_stick_y);
+        } else {
+            jointMotor.setPower(0);
+            jointMotor2.setPower(0);
         }
 
-        if (gamepad2.dpad_up) {
-                jointMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                jointMotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        if (gamepad2.right_bumper) {
+            if (intakeDirection == 'F') {
+                intakeDirection = 'S';
+            } else {
+                intakeDirection = 'F';
+            }
+        } else if (gamepad2.left_bumper) {
+            if (intakeDirection == 'P') {
+                intakeDirection = 'S';
+            } else {
+                intakeDirection = 'P';
+            }
+        }
 
-                jointMotor.setPower(.5);
-                jointMotor2.setPower(-.5);
-        } else if (gamepad2.dpad_down) {
-                jointMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                jointMotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-                jointMotor.setPower(-.5);
-                jointMotor2.setPower(.5);
+        if (intakeDirection == 'S') {
+            intakeServo.setPower(0);
+        } else if (intakeDirection == 'F') {
+            intakeServo.setPower(-1);
+        } else if (intakeDirection == 'P') {
+            intakeServo.setPower(1);
+        } else {
+            telemetry.addData("intakeDirection","invalid");
+            telemetry.update();
         }
 
         if (gamepad2.right_trigger != 0) {
-            intakeServo.setPower(-gamepad2.right_trigger);
-        } else if (gamepad2.left_trigger !=  0) {
-            intakeServo.setPower(gamepad2.left_trigger);
+            intakeSlideMotor.setPower(-gamepad2.right_trigger);
+        } else if (gamepad2.left_trigger != 0) {
+            intakeSlideMotor.setPower(gamepad2.left_trigger);
         } else {
-            intakeServo.setPower(0);
+            intakeSlideMotor.setPower(0);
         }
-
-        intakeSlideMotor.setPower(gamepad2.right_stick_y);
     }
 
     //controller 2
     private void lift() {
-        liftMotor.setPower(gamepad2.left_stick_y);
+        liftMotor.setPower(gamepad2.right_stick_y);
     }
   
 /* New design automatically deposits - no method needed
