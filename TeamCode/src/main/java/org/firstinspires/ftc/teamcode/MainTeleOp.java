@@ -45,6 +45,7 @@ public class MainTeleOp extends LinearOpMode {
         leftDriveMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         jointMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        jointMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         horizontalSlideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //initialize the servos
@@ -83,7 +84,7 @@ public class MainTeleOp extends LinearOpMode {
             slow = 1;
         }
         if (gamepad1.left_bumper) {
-            slow = 2;
+            slow = 1.66;
         }
 
         rightDriveMotor.setPower(-1 * direction * gamepad1.left_stick_y / slow);
