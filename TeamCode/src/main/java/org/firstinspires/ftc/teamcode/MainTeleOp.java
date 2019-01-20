@@ -15,9 +15,11 @@ public class MainTeleOp extends LinearOpMode {
     protected DcMotor rightDriveMotor;
     protected DcMotor leftDriveMotor;
     protected DcMotor liftMotor;
-    protected DcMotor jointMotor;
-    protected DcMotor jointMotor2;
     protected DcMotor intakeSlideMotor;
+    protected DcMotor rightLowerJoint;
+    protected DcMotor leftLowerJoint;
+    protected DcMotor rightUpperJoint;
+    protected DcMotor leftUpperJoint;
 
     // Servos
     protected CRServo intakeServo;
@@ -34,21 +36,30 @@ public class MainTeleOp extends LinearOpMode {
         rightDriveMotor = hardwareMap.get(DcMotor.class, "rightDriveMotor");
         leftDriveMotor = hardwareMap.get(DcMotor.class, "leftDriveMotor");
         liftMotor = hardwareMap.get(DcMotor.class, "liftMotor");
-        jointMotor = hardwareMap.get(DcMotor.class, "jointMotor");
-        jointMotor2 = hardwareMap.get(DcMotor.class,"jointMotor2");
         intakeSlideMotor = hardwareMap.get(DcMotor.class, "intakeSlideMotor");
-
-        jointMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        jointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        jointMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        jointMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightLowerJoint = hardwareMap.get(DcMotor.class,"rightLowerJoint");
+        leftLowerJoint = hardwareMap.get(DcMotor.class,"leftLowerJoint");
+        rightUpperJoint = hardwareMap.get(DcMotor.class,"rightUpperJoint");
+        leftUpperJoint = hardwareMap.get(DcMotor.class,"leftUpperJoint");
 
         rightDriveMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftDriveMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        jointMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        jointMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         intakeSlideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightLowerJoint.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftLowerJoint.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightUpperJoint.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftUpperJoint.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        rightLowerJoint.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftLowerJoint.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightUpperJoint.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftUpperJoint.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        rightLowerJoint.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftLowerJoint.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightUpperJoint.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftUpperJoint.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         //initialize the servos
         intakeServo = hardwareMap.get(CRServo.class, "intakeServo");
@@ -64,6 +75,7 @@ public class MainTeleOp extends LinearOpMode {
             drive();
             intake();
             lift();
+            joint();
         }
     }
 
@@ -104,45 +116,6 @@ public class MainTeleOp extends LinearOpMode {
 
     //controller 2
     private void intake() {
-        if (gamepad2.dpad_up) {
-            jointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            jointMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            jointMotor.setTargetPosition(JOINT_EXTENDED);
-            jointMotor2.setTargetPosition(-JOINT_EXTENDED);
-
-            jointMotor.setPower(.5);
-            jointMotor2.setPower(.5);
-
-            while (jointMotor.isBusy() || jointMotor2.isBusy()) {}
-
-            jointMotor.setPower(0);
-            jointMotor2.setPower(0);
-        } else if (gamepad2.dpad_down) {
-            jointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            jointMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            jointMotor.setTargetPosition(JOINT_FOLDED);
-            jointMotor2.setTargetPosition(-JOINT_FOLDED);
-
-            jointMotor.setPower(.5);
-            jointMotor2.setPower(.5);
-
-            while (jointMotor.isBusy() || jointMotor2.isBusy()) {}
-
-            jointMotor.setPower(0);
-            jointMotor2.setPower(0);
-        } else if (gamepad2.left_stick_y != 0) {
-            jointMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            jointMotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-            jointMotor.setPower(gamepad2.left_stick_y);
-            jointMotor2.setPower(-gamepad2.left_stick_y);
-        } else {
-            jointMotor.setPower(0);
-            jointMotor2.setPower(0);
-        }
-
         if (gamepad2.right_bumper) {
             if (intakeDirection == 'F') {
                 intakeDirection = 'S';
@@ -167,13 +140,17 @@ public class MainTeleOp extends LinearOpMode {
             telemetry.addData("intakeDirection","invalid");
             telemetry.update();
         }
+    }
 
-        if (gamepad2.right_trigger != 0) {
-            intakeSlideMotor.setPower(-gamepad2.right_trigger);
-        } else if (gamepad2.left_trigger != 0) {
-            intakeSlideMotor.setPower(gamepad2.left_trigger);
-        } else {
-            intakeSlideMotor.setPower(0);
+    private void joint() {
+        rightLowerJoint.setPower(gamepad2.left_stick_y);
+        leftLowerJoint.setPower(gamepad2.left_stick_y);
+
+        rightUpperJoint.setPower(gamepad2.right_stick_y);
+        leftUpperJoint.setPower(gamepad2.right_stick_y);
+
+        if (gamepad2.dpad_up) { //dpad_up on gamepad2 will be the 'extended' position
+            //TODO: input sequence for extension + retraction
         }
     }
 
