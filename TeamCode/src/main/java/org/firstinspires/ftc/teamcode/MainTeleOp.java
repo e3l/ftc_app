@@ -6,16 +6,12 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import java.security.DomainCombiner;
-
 @TeleOp
 
 public class MainTeleOp extends LinearOpMode {
     // Motors
     protected DcMotor rightDriveMotor;
     protected DcMotor leftDriveMotor;
-    protected DcMotor liftMotor;
-    protected DcMotor intakeSlideMotor;
     protected DcMotor rightLowerJoint;
     protected DcMotor leftLowerJoint;
     protected DcMotor rightUpperJoint;
@@ -35,8 +31,6 @@ public class MainTeleOp extends LinearOpMode {
         //initialize all the motors
         rightDriveMotor = hardwareMap.get(DcMotor.class, "rightDriveMotor");
         leftDriveMotor = hardwareMap.get(DcMotor.class, "leftDriveMotor");
-        liftMotor = hardwareMap.get(DcMotor.class, "liftMotor");
-        intakeSlideMotor = hardwareMap.get(DcMotor.class, "intakeSlideMotor");
         rightLowerJoint = hardwareMap.get(DcMotor.class,"rightLowerJoint");
         leftLowerJoint = hardwareMap.get(DcMotor.class,"leftLowerJoint");
         rightUpperJoint = hardwareMap.get(DcMotor.class,"rightUpperJoint");
@@ -44,8 +38,6 @@ public class MainTeleOp extends LinearOpMode {
 
         rightDriveMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftDriveMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        intakeSlideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightLowerJoint.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftLowerJoint.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightUpperJoint.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -112,42 +104,42 @@ public class MainTeleOp extends LinearOpMode {
     }
 
     // A 'direction' variable for toggling intake
-    char intakeDirection = 'S'; // S for stop, I for intake, P for push
+    // S for stop, I for intake, P for push
+    private final static int STOP = 0;
+    private final static int SPIT = 1;
+    private final static int SUCK = -1;
+    private int intakePower = STOP;
+    private boolean intakeServoChangingState = false;
 
     //controller 2
     private void intake() {
-        if (gamepad2.right_bumper) {
-            if (intakeDirection == 'F') {
-                intakeDirection = 'S';
+        if (gamepad2.right_bumper && !intakeServoChangingState) {
+            if (intakePower == SUCK) {
+                intakePower = STOP;
             } else {
-                intakeDirection = 'F';
+                intakePower = SUCK;
             }
-        } else if (gamepad2.left_bumper) {
-            if (intakeDirection == 'P') {
-                intakeDirection = 'S';
+            intakeServoChangingState = true;
+        } else if (gamepad2.left_bumper && !intakeServoChangingState) {
+            if (intakePower == SPIT) {
+                intakePower = STOP;
             } else {
-                intakeDirection = 'P';
+                intakePower = SPIT;
             }
+            intakeServoChangingState = true;
+        } else if (!gamepad2.left_bumper && !gamepad2.right_bumper) {
+            intakeServoChangingState = false;
         }
 
-        if (intakeDirection == 'S') {
-            intakeServo.setPower(0);
-        } else if (intakeDirection == 'F') {
-            intakeServo.setPower(-1);
-        } else if (intakeDirection == 'P') {
-            intakeServo.setPower(1);
-        } else {
-            telemetry.addData("intakeDirection","invalid");
-            telemetry.update();
-        }
+        intakeServo.setPower(intakePower);
     }
 
     private void joint() {
-        rightLowerJoint.setPower(gamepad2.left_stick_y);
-        leftLowerJoint.setPower(gamepad2.left_stick_y);
+        rightLowerJoint.setPower(-gamepad2.right_stick_y);
+        leftLowerJoint.setPower(-gamepad2.right_stick_y);
 
-        rightUpperJoint.setPower(gamepad2.right_stick_y);
-        leftUpperJoint.setPower(gamepad2.right_stick_y);
+        rightUpperJoint.setPower(-gamepad2.left_stick_y);
+        leftUpperJoint.setPower(-gamepad2.left_stick_y);
 
         if (gamepad2.dpad_up) { //dpad_up on gamepad2 will be the 'extended' position
             //TODO: input sequence for extension + retraction
@@ -156,7 +148,7 @@ public class MainTeleOp extends LinearOpMode {
 
     //controller 2
     private void lift() {
-        liftMotor.setPower(gamepad2.right_stick_y);
+//        liftMotor.setPower(gamepad2.right_stick_y);
     }
   
 /* New design automatically deposits - no method needed
