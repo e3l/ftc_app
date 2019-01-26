@@ -179,7 +179,8 @@ public class MainTeleOp extends LinearOpMode {
 
     //controller 2
     private void lift() {
-        liftMotor.setPower(gamepad2.right_stick_y);
+        liftMotor.setPower(gamepad2.right_trigger);
+        liftMotor.setPower(-gamepad2.left_trigger);
     }
   
 /* New design automatically deposits - no method needed
