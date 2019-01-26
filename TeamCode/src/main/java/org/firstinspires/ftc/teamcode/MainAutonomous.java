@@ -74,35 +74,9 @@ public abstract class MainAutonomous extends LinearOpMode {
         sampleColor = hardwareMap.get(LynxI2cColorRangeSensor.class, "sampleColor");
     }
 
-    protected void jointPosition(String position) {
+    protected void jointPosition(String position) { // TODO
         if (position.equals("extended")) {
-            jointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            jointMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            jointMotor.setTargetPosition(-JOINT_EXTENDED);
-            jointMotor2.setTargetPosition(JOINT_EXTENDED);
-
-            jointMotor.setPower(.5);
-            jointMotor2.setPower(.5);
-
-            while (jointMotor.isBusy() || jointMotor2.isBusy()) {}
-
-            jointMotor.setPower(0);
-            jointMotor2.setPower(0);
         } else if (position.equals("folded")) {
-            jointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            jointMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            jointMotor.setTargetPosition(JOINT_FOLDED);
-            jointMotor2.setTargetPosition(JOINT_FOLDED);
-
-            jointMotor.setPower(.5);
-            jointMotor2.setPower(.5);
-
-            while(jointMotor.isBusy() || jointMotor2.isBusy()) {}
-
-            jointMotor.setPower(0);
-            jointMotor2.setPower(0);
         }
     }
 
