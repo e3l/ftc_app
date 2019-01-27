@@ -34,12 +34,10 @@ public abstract class MainAutonomous extends LinearOpMode {
     protected LynxI2cColorRangeSensor sampleColor;
 
     // Multiplier Constants
-    protected static final int FORWARD_MULTIPLIER = 88;
-    protected static final double TURN_MULTIPLIER = 12.8;
+    protected static final int FORWARD_MULTIPLIER = 120;
+    protected static final double TURN_MULTIPLIER = 22.5;
     protected static final int JOINT_EXTENDED = 90;
     protected static final int JOINT_FOLDED = 0;
-
-
 
     // More Constants - Field Numbers
     protected static final int SAMPLE_LENGTH_INCHES = 54;
@@ -52,7 +50,6 @@ public abstract class MainAutonomous extends LinearOpMode {
     protected static final int TURN_AROUND_DEGREES = 180;
     protected static final int SAMPLE_END_TO_DEPOT = 72;
     protected static final int DEPOT_TO_CRATER_INCHES = 84;
-
 
     protected void initOpMode() {
         leftDriveMotor = hardwareMap.get(DcMotor.class, "leftDriveMotor");
