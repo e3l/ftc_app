@@ -16,6 +16,7 @@ public class MainTeleOp extends LinearOpMode {
     protected DcMotor leftLowerJoint;
     protected DcMotor rightUpperJoint;
     protected DcMotor leftUpperJoint;
+    protected DcMotor liftMotor;
 
     // Servos
     protected CRServo intakeServo;
@@ -35,6 +36,7 @@ public class MainTeleOp extends LinearOpMode {
         leftLowerJoint = hardwareMap.get(DcMotor.class,"leftLowerJoint");
         rightUpperJoint = hardwareMap.get(DcMotor.class,"rightUpperJoint");
         leftUpperJoint = hardwareMap.get(DcMotor.class,"leftUpperJoint");
+        liftMotor =  hardwareMap.get(DcMotor.class,"liftMotor");
 
         rightDriveMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftDriveMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -42,6 +44,7 @@ public class MainTeleOp extends LinearOpMode {
         leftLowerJoint.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightUpperJoint.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftUpperJoint.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         rightLowerJoint.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftLowerJoint.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -148,7 +151,8 @@ public class MainTeleOp extends LinearOpMode {
 
     //controller 2
     private void lift() {
-//        liftMotor.setPower(gamepad2.right_stick_y);
+        liftMotor.setPower(gamepad2.right_trigger);
+        liftMotor.setPower(-gamepad2.left_trigger);
     }
   
 /* New design automatically deposits - no method needed
