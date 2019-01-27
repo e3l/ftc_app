@@ -6,18 +6,17 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import java.security.DomainCombiner;
-
 @TeleOp
 
 public class MainTeleOp extends LinearOpMode {
     // Motors
     protected DcMotor rightDriveMotor;
     protected DcMotor leftDriveMotor;
+    protected DcMotor rightLowerJoint;
+    protected DcMotor leftLowerJoint;
+    protected DcMotor rightUpperJoint;
+    protected DcMotor leftUpperJoint;
     protected DcMotor liftMotor;
-    protected DcMotor jointMotor;
-    protected DcMotor jointMotor2;
-    protected DcMotor intakeSlideMotor;
 
     // Servos
     protected CRServo intakeServo;
@@ -33,22 +32,29 @@ public class MainTeleOp extends LinearOpMode {
         //initialize all the motors
         rightDriveMotor = hardwareMap.get(DcMotor.class, "rightDriveMotor");
         leftDriveMotor = hardwareMap.get(DcMotor.class, "leftDriveMotor");
-        liftMotor = hardwareMap.get(DcMotor.class, "liftMotor");
-        jointMotor = hardwareMap.get(DcMotor.class, "jointMotor");
-        jointMotor2 = hardwareMap.get(DcMotor.class,"jointMotor2");
-        intakeSlideMotor = hardwareMap.get(DcMotor.class, "intakeSlideMotor");
-
-        jointMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        jointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        jointMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        jointMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightLowerJoint = hardwareMap.get(DcMotor.class,"rightLowerJoint");
+        leftLowerJoint = hardwareMap.get(DcMotor.class,"leftLowerJoint");
+        rightUpperJoint = hardwareMap.get(DcMotor.class,"rightUpperJoint");
+        leftUpperJoint = hardwareMap.get(DcMotor.class,"leftUpperJoint");
+        liftMotor =  hardwareMap.get(DcMotor.class,"liftMotor");
 
         rightDriveMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftDriveMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightLowerJoint.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftLowerJoint.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightUpperJoint.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftUpperJoint.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        jointMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        jointMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        intakeSlideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        rightLowerJoint.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftLowerJoint.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightUpperJoint.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftUpperJoint.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        rightLowerJoint.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftLowerJoint.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightUpperJoint.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftUpperJoint.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         //initialize the servos
         intakeServo = hardwareMap.get(CRServo.class, "intakeServo");
@@ -64,6 +70,7 @@ public class MainTeleOp extends LinearOpMode {
             drive();
             intake();
             lift();
+            joint();
         }
     }
 
@@ -100,80 +107,45 @@ public class MainTeleOp extends LinearOpMode {
     }
 
     // A 'direction' variable for toggling intake
-    char intakeDirection = 'S'; // S for stop, I for intake, P for push
+    // S for stop, I for intake, P for push
+    private final static int STOP = 0;
+    private final static int SPIT = 1;
+    private final static int SUCK = -1;
+    private int intakePower = STOP;
+    private boolean intakeServoChangingState = false;
 
     //controller 2
     private void intake() {
-        if (gamepad2.dpad_up) {
-            jointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            jointMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            jointMotor.setTargetPosition(JOINT_EXTENDED);
-            jointMotor2.setTargetPosition(-JOINT_EXTENDED);
-
-            jointMotor.setPower(.5);
-            jointMotor2.setPower(.5);
-
-            while (jointMotor.isBusy() || jointMotor2.isBusy()) {}
-
-            jointMotor.setPower(0);
-            jointMotor2.setPower(0);
-        } else if (gamepad2.dpad_down) {
-            jointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            jointMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            jointMotor.setTargetPosition(JOINT_FOLDED);
-            jointMotor2.setTargetPosition(-JOINT_FOLDED);
-
-            jointMotor.setPower(.5);
-            jointMotor2.setPower(.5);
-
-            while (jointMotor.isBusy() || jointMotor2.isBusy()) {}
-
-            jointMotor.setPower(0);
-            jointMotor2.setPower(0);
-        } else if (gamepad2.left_stick_y != 0) {
-            jointMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            jointMotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-            jointMotor.setPower(gamepad2.left_stick_y);
-            jointMotor2.setPower(-gamepad2.left_stick_y);
-        } else {
-            jointMotor.setPower(0);
-            jointMotor2.setPower(0);
-        }
-
-        if (gamepad2.right_bumper) {
-            if (intakeDirection == 'F') {
-                intakeDirection = 'S';
+        if (gamepad2.right_bumper && !intakeServoChangingState) {
+            if (intakePower == SUCK) {
+                intakePower = STOP;
             } else {
-                intakeDirection = 'F';
+                intakePower = SUCK;
             }
-        } else if (gamepad2.left_bumper) {
-            if (intakeDirection == 'P') {
-                intakeDirection = 'S';
+            intakeServoChangingState = true;
+        } else if (gamepad2.left_bumper && !intakeServoChangingState) {
+            if (intakePower == SPIT) {
+                intakePower = STOP;
             } else {
-                intakeDirection = 'P';
+                intakePower = SPIT;
             }
+            intakeServoChangingState = true;
+        } else if (!gamepad2.left_bumper && !gamepad2.right_bumper) {
+            intakeServoChangingState = false;
         }
 
-        if (intakeDirection == 'S') {
-            intakeServo.setPower(0);
-        } else if (intakeDirection == 'F') {
-            intakeServo.setPower(-1);
-        } else if (intakeDirection == 'P') {
-            intakeServo.setPower(1);
-        } else {
-            telemetry.addData("intakeDirection","invalid");
-            telemetry.update();
-        }
+        intakeServo.setPower(intakePower);
+    }
 
-        if (gamepad2.right_trigger != 0) {
-            intakeSlideMotor.setPower(-gamepad2.right_trigger);
-        } else if (gamepad2.left_trigger != 0) {
-            intakeSlideMotor.setPower(gamepad2.left_trigger);
-        } else {
-            intakeSlideMotor.setPower(0);
+    private void joint() {
+        rightLowerJoint.setPower(-gamepad2.right_stick_y);
+        leftLowerJoint.setPower(-gamepad2.right_stick_y);
+
+        rightUpperJoint.setPower(-gamepad2.left_stick_y);
+        leftUpperJoint.setPower(-gamepad2.left_stick_y);
+
+        if (gamepad2.dpad_up) { //dpad_up on gamepad2 will be the 'extended' position
+            //TODO: input sequence for extension + retraction
         }
     }
 
