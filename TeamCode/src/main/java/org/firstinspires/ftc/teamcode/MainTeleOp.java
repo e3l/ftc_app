@@ -138,21 +138,42 @@ public class MainTeleOp extends LinearOpMode {
     }
 
     private void joint() {
-        rightLowerJoint.setPower(-gamepad2.right_stick_y);
-        leftLowerJoint.setPower(-gamepad2.right_stick_y);
+        if (gamepad2.dpad_down) { //dpad_up on gamepad2 will run the motors at the same time
+            rightLowerJoint.setPower(-1);
+            leftLowerJoint.setPower(-1);
 
-        rightUpperJoint.setPower(-gamepad2.left_stick_y);
-        leftUpperJoint.setPower(-gamepad2.left_stick_y);
+            rightUpperJoint.setPower(-1);
+            leftUpperJoint.setPower(-1);
+        } else if (gamepad2.dpad_up) {
+            rightLowerJoint.setPower(1);
+            leftLowerJoint.setPower(1);
 
-        if (gamepad2.dpad_up) { //dpad_up on gamepad2 will be the 'extended' position
-            //TODO: input sequence for extension + retraction
+            rightUpperJoint.setPower(1);
+            leftUpperJoint.setPower(1);
+        } else if (gamepad2.left_stick_y != 0 || gamepad2.right_stick_y != 0) {
+            rightLowerJoint.setPower(-gamepad2.right_stick_y);
+            leftLowerJoint.setPower(-gamepad2.right_stick_y);
+
+            rightUpperJoint.setPower(-gamepad2.left_stick_y);
+            leftUpperJoint.setPower(-gamepad2.left_stick_y);
+        } else {
+            rightLowerJoint.setPower(0);
+            leftLowerJoint.setPower(0);
+
+            rightUpperJoint.setPower(0);
+            leftUpperJoint.setPower(0);
         }
     }
 
     //controller 2
     private void lift() {
-        liftMotor.setPower(gamepad2.right_trigger);
-        liftMotor.setPower(-gamepad2.left_trigger);
+        if (gamepad2.right_trigger != 0) {
+            liftMotor.setPower(gamepad2.right_trigger);
+        } else if (gamepad2.left_trigger != 0) {
+            liftMotor.setPower(-gamepad2.left_trigger);
+        } else {
+            liftMotor.setPower(0);
+        }
     }
   
 /* New design automatically deposits - no method needed
