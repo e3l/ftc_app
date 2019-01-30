@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import android.graphics.Color;
-
 import com.qualcomm.hardware.lynx.LynxI2cColorRangeSensor;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -19,8 +17,10 @@ public abstract class MainAutonomous extends LinearOpMode {
     // Motors
     protected DcMotor rightDriveMotor;
     protected DcMotor leftDriveMotor;
-    protected DcMotor jointMotor;
-    protected DcMotor jointMotor2;
+    protected DcMotor rightLowerJoint;
+    protected DcMotor leftLowerJoint;
+    protected DcMotor rightUpperJoint;
+    protected DcMotor leftUpperJoint;
     protected DcMotor liftMotor;
 
     // Continuous rotation servos
@@ -31,21 +31,17 @@ public abstract class MainAutonomous extends LinearOpMode {
     protected Servo markerServo;
 
     // Color sensor
-    protected LynxI2cColorRangeSensor sampleColor;
+    protected LynxI2cColorRangeSensor sampleSensor;
 
     // Multiplier Constants
-    protected static final int FORWARD_MULTIPLIER = 88;
-    protected static final double TURN_MULTIPLIER = 12.8;
-    protected static final int JOINT_EXTENDED = 90;
-    protected static final int JOINT_FOLDED = 0;
-
-
+    protected static final int FORWARD_MULTIPLIER = 120;
+    protected static final double TURN_MULTIPLIER = 22.5;
 
     // More Constants - Field Numbers
-    protected static final int SAMPLE_LENGTH_INCHES = 54;
+    protected static final int SAMPLE_LENGTH_INCHES = 58;
     protected static final int LANDER_TO_SAMPLE_START_DEGREES = 30;
-    protected static final int LANDER_TO_SAMPLE_START_INCHES = 38;
-    protected static final int TURN_TO_SAMPLE_DEGREES = 135;
+    protected static final int LANDER_TO_SAMPLE_START_INCHES = 20;
+    protected static final int TURN_TO_SAMPLE_DEGREES = 65;
     protected static final int SAMPLE_END_TO_PARALLEL_WALL_DEGREES = -45;
     protected static final int SAMPLE_END_TO_SAMPLE_START_INCHES = 48;
     protected static final int PARALLEL_WALL_TO_SAMPLE_START_DEGREES = -45;
@@ -53,42 +49,53 @@ public abstract class MainAutonomous extends LinearOpMode {
     protected static final int SAMPLE_END_TO_DEPOT = 72;
     protected static final int DEPOT_TO_CRATER_INCHES = 84;
 
-
     protected void initOpMode() {
         leftDriveMotor = hardwareMap.get(DcMotor.class, "leftDriveMotor");
         rightDriveMotor = hardwareMap.get(DcMotor.class, "rightDriveMotor");
-        jointMotor = hardwareMap.get(DcMotor.class, "jointMotor");
-        jointMotor2 = hardwareMap.get(DcMotor.class,"jointMotor2");
+        rightLowerJoint = hardwareMap.get(DcMotor.class,"rightLowerJoint");
+        leftLowerJoint = hardwareMap.get(DcMotor.class,"leftLowerJoint");
+        rightUpperJoint = hardwareMap.get(DcMotor.class,"rightUpperJoint");
+        leftUpperJoint = hardwareMap.get(DcMotor.class,"leftUpperJoint");
         liftMotor = hardwareMap.get(DcMotor.class, "liftMotor");
 
-        jointMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        jointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        jointMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        jointMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightLowerJoint.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftLowerJoint.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightUpperJoint.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftUpperJoint.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         intakeServo = hardwareMap.get(CRServo.class, "intakeServo");
 
         sampleServo = hardwareMap.get(Servo.class, "sampleServo");
         markerServo = hardwareMap.get(Servo.class,"markerServo");
 
-        sampleColor = hardwareMap.get(LynxI2cColorRangeSensor.class, "sampleColor");
+        sampleSensor = hardwareMap.get(LynxI2cColorRangeSensor.class, "sampleSensor");
+
+        sampleServo.setPosition(.7);
+        markerServo.setPosition(.9);
     }
 
-    protected void jointPosition(String position) { // TODO
-        if (position.equals("extended")) {
-        } else if (position.equals("folded")) {
-        }
+    protected void jointExtend() {
+        rightUpperJoint.setPower(1);
+        leftUpperJoint.setPower(1);
+
+        sleep(500);
+
+        rightLowerJoint.setPower(1);
+        leftLowerJoint.setPower(1);
+
+        rightUpperJoint.setPower(0);
+        leftUpperJoint.setPower(0);
+
+        sleep(850);
+
+        rightLowerJoint.setPower(0);
+        leftLowerJoint.setPower(0);
     }
 
     protected void lower() {
-        liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        liftMotor.setTargetPosition(1000);
-        liftMotor.setPower(1);
-
-        while (liftMotor.isBusy()) {}
-
+        liftMotor.setPower(-1);
+        sleep(2950);
         liftMotor.setPower(0);
     }
 
@@ -122,7 +129,6 @@ public abstract class MainAutonomous extends LinearOpMode {
         // Shut off motors
         leftDriveMotor.setPower(0);
         rightDriveMotor.setPower(0);
-
     }
 
 
@@ -169,10 +175,11 @@ public abstract class MainAutonomous extends LinearOpMode {
         rightDriveMotor.setPower(.15);
         // Loop until both motors are no longer busy.
         while (leftDriveMotor.isBusy() || rightDriveMotor.isBusy()) {
-            if (sampleColor.red() > sampleColor.green() && sampleColor.green() > sampleColor.blue()) {
-                sampleServo.setPosition(.25);
+            if (sampleSensor.red() > sampleSensor.green() && sampleSensor.green() > sampleSensor.blue()) {
                 sleep(100);
-                sampleServo.setPosition(0);
+                sampleServo.setPosition(1);
+                sleep(100);
+                sampleServo.setPosition(.7);
                 telemetry.addData("sample", "knock");
                 telemetry.update();
             }
@@ -182,8 +189,8 @@ public abstract class MainAutonomous extends LinearOpMode {
     }
 
     protected void marker() {
-        markerServo.setPosition(0);
+        markerServo.setPosition(.5);
         sleep(1000);
-        markerServo.setPosition(-1);
+        markerServo.setPosition(.9);
     }
 }
