@@ -46,16 +46,11 @@ public abstract class MainAutonomous extends LinearOpMode {
     protected static final double TURN_MULTIPLIER = 22.5;
 
     // More Constants - Field Numbers
-    public static final int SAMPLE_TO_NEXT_STOP_INCHES = 63;
-    protected static final int LANDER_TO_SAMPLE_START_DEGREES = 30;
+    protected static final int SAMPLE_TO_NEXT_STOP_INCHES = 63;
+    protected static final int LANDER_TO_SAMPLE_START_DEGREES = 35;
+    protected static final int TURN_TO_SAMPLE_DEGREES = 65;
     protected static final int LANDER_TO_SAMPLE_START_INCHES = 20;
-    protected static final int TURN_TO_SAMPLE_DEGREES = 60;
-    protected static final int SAMPLE_END_TO_PARALLEL_WALL_DEGREES = -45;
-    protected static final int SAMPLE_END_TO_SAMPLE_START_INCHES = 48;
-    protected static final int PARALLEL_WALL_TO_SAMPLE_START_DEGREES = -45;
-    protected static final int TURN_AROUND_DEGREES = 180;
-    protected static final int SAMPLE_END_TO_DEPOT = 72;
-    protected static final int DEPOT_TO_CRATER_INCHES = 84;
+    protected static final int DEPOT_TO_CRATER_INCHES = 75;
 
     protected void initOpMode() {
         leftDriveMotor = hardwareMap.get(DcMotor.class, "leftDriveMotor");
@@ -103,7 +98,7 @@ public abstract class MainAutonomous extends LinearOpMode {
 
     protected void lower() {
         liftMotor.setPower(-1);
-        sleep(2950);
+        sleep(3050);
         liftMotor.setPower(0);
     }
 
@@ -231,11 +226,33 @@ public abstract class MainAutonomous extends LinearOpMode {
         sampleServo.setPosition(.7);
     }
 
-    private char goldPosition;
     protected void sample() {
         tfod.activate();
 
-        for (int x = 0; x < 30000000; x++) {
+        final char goldPosition = findGoldPosition();
+
+        tfod.shutdown();
+
+        if (goldPosition == 'R') {
+            moveInch(14,.55);
+            knockSample();
+        } else if (goldPosition == 'C') {
+            moveInch(26,.55);
+            knockSample();
+            moveInch(2,.55);
+        } else if (goldPosition == 'L') {
+            moveInch(40,.55);
+            knockSample();
+        } else {
+            telemetry.addData("tensor","failed");
+            telemetry.update();
+            moveInch(SAMPLE_TO_NEXT_STOP_INCHES,.55);
+            turn(-45,.35);
+        }
+    }
+
+    private char findGoldPosition() {
+        for (int x = 0; x < 40000000; x++) {
             List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
             if (updatedRecognitions != null) {
                 telemetry.addData("# Object Detected", updatedRecognitions.size());
@@ -253,43 +270,23 @@ public abstract class MainAutonomous extends LinearOpMode {
                         }
                     }
                     if (goldMineralX != -1 && silverMineral1X != -1 && silverMineral2X != -1) {
+                        telemetry.addData("X", x);
+                        telemetry.update();
                         if (goldMineralX < silverMineral1X && goldMineralX < silverMineral2X) {
                             telemetry.addData("Gold Mineral Position", "Left");
-                            goldPosition = 'L';
+                            return 'L';
                         } else if (goldMineralX > silverMineral1X && goldMineralX > silverMineral2X) {
                             telemetry.addData("Gold Mineral Position", "Right");
-                            goldPosition = 'R';
+                            return 'R';
                         } else {
                             telemetry.addData("Gold Mineral Position", "Center");
-                            goldPosition = 'C';
+                            return 'C';
                         }
-                        telemetry.addData("X",x);
-                        telemetry.update();
-                        break;
                     }
                 }
                 telemetry.update();
             }
         }
-
-        tfod.shutdown();
-
-        if (goldPosition == 'R') {
-            moveInch(6,.55);
-            knockSample();
-            moveInch(SAMPLE_TO_NEXT_STOP_INCHES - 6,.55);
-        } else if (goldPosition == 'C') {
-            moveInch(24,.55);
-            knockSample();
-            moveInch(SAMPLE_TO_NEXT_STOP_INCHES - 20,.55);
-        } else if (goldPosition == 'L') {
-            moveInch(38,.55);
-            knockSample();
-            moveInch(SAMPLE_TO_NEXT_STOP_INCHES - 34,.55);
-        } else {
-            telemetry.addData("tensor","failed");
-            telemetry.update();
-            moveInch(SAMPLE_TO_NEXT_STOP_INCHES,.55);
-        }
+        return 'F';
     }
 }

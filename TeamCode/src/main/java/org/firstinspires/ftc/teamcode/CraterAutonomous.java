@@ -16,10 +16,10 @@ public class CraterAutonomous extends MainAutonomous {
         lower();
 
         //move to the crater sample and get in position
-        turn(LANDER_TO_SAMPLE_START_DEGREES, .25);
-        moveInch(LANDER_TO_SAMPLE_START_INCHES,.45);
-        turn(TURN_TO_SAMPLE_DEGREES, .25);
-        moveInch(-38,.45);
+        turn(LANDER_TO_SAMPLE_START_DEGREES, .35);
+        moveInch(LANDER_TO_SAMPLE_START_INCHES,.55);
+        turn(TURN_TO_SAMPLE_DEGREES, .35);
+        moveInch(-38,.55);
 
         // Knock the sample
         sample();
@@ -36,8 +36,8 @@ public class CraterAutonomous extends MainAutonomous {
 //        marker();
 
         //go and partially park in crater
-        turn(-105,.35);
-        moveInch(10,.35);
+        turn(-90,.35);
+        moveInch(10,.55);
         jointExtend();
     }
 }
