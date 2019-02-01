@@ -50,7 +50,7 @@ public abstract class MainAutonomous extends LinearOpMode {
     protected static final int LANDER_TO_SAMPLE_START_DEGREES = 35;
     protected static final int TURN_TO_SAMPLE_DEGREES = 65;
     protected static final int LANDER_TO_SAMPLE_START_INCHES = 20;
-    protected static final int DEPOT_TO_CRATER_INCHES = 75;
+    protected static final int DEPOT_TO_CRATER_INCHES = 58;
 
     protected void initOpMode() {
         leftDriveMotor = hardwareMap.get(DcMotor.class, "leftDriveMotor");
@@ -98,7 +98,7 @@ public abstract class MainAutonomous extends LinearOpMode {
 
     protected void lower() {
         liftMotor.setPower(-1);
-        sleep(3050);
+        sleep(3000);
         liftMotor.setPower(0);
     }
 
@@ -226,10 +226,11 @@ public abstract class MainAutonomous extends LinearOpMode {
         sampleServo.setPosition(.7);
     }
 
+    protected char goldPosition;
     protected void sample() {
         tfod.activate();
 
-        final char goldPosition = findGoldPosition();
+        goldPosition = findGoldPosition();
 
         tfod.shutdown();
 
@@ -237,9 +238,8 @@ public abstract class MainAutonomous extends LinearOpMode {
             moveInch(14,.55);
             knockSample();
         } else if (goldPosition == 'C') {
-            moveInch(26,.55);
+            moveInch(28,.55);
             knockSample();
-            moveInch(2,.55);
         } else if (goldPosition == 'L') {
             moveInch(40,.55);
             knockSample();
@@ -252,7 +252,7 @@ public abstract class MainAutonomous extends LinearOpMode {
     }
 
     private char findGoldPosition() {
-        for (int x = 0; x < 40000000; x++) {
+        for (int x = 0; x < 30000000; x++) {
             List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
             if (updatedRecognitions != null) {
                 telemetry.addData("# Object Detected", updatedRecognitions.size());
@@ -287,6 +287,6 @@ public abstract class MainAutonomous extends LinearOpMode {
                 telemetry.update();
             }
         }
-        return 'F';
+        return 'C';
     }
 }

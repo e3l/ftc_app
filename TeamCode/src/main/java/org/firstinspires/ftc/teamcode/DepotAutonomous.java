@@ -15,18 +15,27 @@ public class DepotAutonomous extends MainAutonomous {
         lower();
 
         //move to the crater sample and get in position
-        turn(LANDER_TO_SAMPLE_START_DEGREES, 0.35);
+        turn(LANDER_TO_SAMPLE_START_DEGREES, 1);
         moveInch(LANDER_TO_SAMPLE_START_INCHES, 0.55);
-        turn(TURN_TO_SAMPLE_DEGREES + 10, 0.35);
-        moveInch(-38,.55);
+        turn(TURN_TO_SAMPLE_DEGREES, 0.35);
+        moveInch(-41,.55);
 
         //do the sample stuff
         sample();
 
-        //move to marker
-        turn(-90, 0.35);
-        moveInch(40, 0.55);
-        turn(-130,.35);
+        if (goldPosition == 'R') {
+            turn(-80,.35);
+            moveInch(41, 0.55);
+            turn(-150,.35);
+        } else if (goldPosition == 'C') {
+            turn(-90, 0.35);
+            moveInch(40, 0.55);
+            turn(-140,.35);
+        } else if (goldPosition == 'L') {
+            turn(-100,.35);
+            moveInch(40, 0.55);
+            turn(-120,.35);
+        }
 
         marker();
 
