@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.lynx.LynxI2cColorRangeSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
@@ -19,6 +20,8 @@ public class MainTeleOp extends LinearOpMode {
     protected DcMotor liftMotor;
 
     // Servos
+    protected Servo sampleServo;
+    protected Servo markerServo;
     protected CRServo intakeServo;
 
     // Color sensors
@@ -57,10 +60,9 @@ public class MainTeleOp extends LinearOpMode {
         leftUpperJoint.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         //initialize the servos
+        sampleServo = hardwareMap.get(Servo.class,"sampleServo");
+        markerServo = hardwareMap.get(Servo.class,"markerServo");
         intakeServo = hardwareMap.get(CRServo.class, "intakeServo");
-
-        // Sensors initialization
-        sampleSensor = hardwareMap.get(LynxI2cColorRangeSensor.class, "sampleSensor");
     }
 
     public void runOpMode() {
@@ -173,6 +175,14 @@ public class MainTeleOp extends LinearOpMode {
             liftMotor.setPower(-gamepad2.left_trigger);
         } else {
             liftMotor.setPower(0);
+        }
+    }
+
+    private void servos() {
+        if (gamepad2.x) {
+            markerServo.setPosition(.9);
+        } else if (gamepad2.y) {
+            sampleServo.setPosition(.7);
         }
     }
   
