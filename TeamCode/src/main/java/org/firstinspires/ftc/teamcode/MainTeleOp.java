@@ -73,6 +73,7 @@ public class MainTeleOp extends LinearOpMode {
             intake();
             lift();
             joint();
+            servos();
         }
     }
 
