@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.lynx.LynxI2cColorRangeSensor;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -20,6 +21,8 @@ import java.util.List;
  */
 
 @Autonomous
+@Disabled
+//
 public abstract class MainAutonomous extends LinearOpMode {
 
     // Motors
@@ -50,7 +53,7 @@ public abstract class MainAutonomous extends LinearOpMode {
     protected static final int LANDER_TO_SAMPLE_START_DEGREES = 35;
     protected static final int TURN_TO_SAMPLE_DEGREES = 65;
     protected static final int LANDER_TO_SAMPLE_START_INCHES = 20;
-    protected static final int DEPOT_TO_CRATER_INCHES = 58;
+    protected static final int DEPOT_TO_CRATER_INCHES = 60;
 
     protected void initOpMode() {
         leftDriveMotor = hardwareMap.get(DcMotor.class, "leftDriveMotor");
@@ -98,7 +101,7 @@ public abstract class MainAutonomous extends LinearOpMode {
 
     protected void lower() {
         liftMotor.setPower(-1);
-        sleep(3000);
+        sleep(3250);
         liftMotor.setPower(0);
     }
 
@@ -127,7 +130,13 @@ public abstract class MainAutonomous extends LinearOpMode {
 
 
         // Loop until motors are no longer busy
-        while (leftDriveMotor.isBusy() || rightDriveMotor.isBusy()) ;
+        while (leftDriveMotor.isBusy() || rightDriveMotor.isBusy()) {
+            if (leftDriveMotor.getCurrentPosition() > leftDriveMotor.getTargetPosition() - 10 && leftDriveMotor.getCurrentPosition() < leftDriveMotor.getTargetPosition() + 10) {
+                if (rightDriveMotor.getCurrentPosition() > rightDriveMotor.getTargetPosition() - 10 && rightDriveMotor.getCurrentPosition() < rightDriveMotor.getCurrentPosition() + 10) {
+                    break;
+                }
+            }
+        }
 
         // Shut off motors
         leftDriveMotor.setPower(0);
@@ -158,7 +167,14 @@ public abstract class MainAutonomous extends LinearOpMode {
         rightDriveMotor.setPower(speed);
 
         // Loop until both motors are no longer busy.
-        while (leftDriveMotor.isBusy() || rightDriveMotor.isBusy()) ;
+        while (leftDriveMotor.isBusy() || rightDriveMotor.isBusy()) {
+            if (leftDriveMotor.getCurrentPosition() > leftDriveMotor.getTargetPosition() - 10 && leftDriveMotor.getCurrentPosition() < leftDriveMotor.getTargetPosition() + 10) {
+                if (rightDriveMotor.getCurrentPosition() > rightDriveMotor.getTargetPosition() - 10 && rightDriveMotor.getCurrentPosition() < rightDriveMotor.getCurrentPosition() + 10) {
+                    break;
+                }
+            }
+        }
+
         leftDriveMotor.setPower(0);
         rightDriveMotor.setPower(0);
     }
@@ -241,7 +257,7 @@ public abstract class MainAutonomous extends LinearOpMode {
             moveInch(28,.55);
             knockSample();
         } else if (goldPosition == 'L') {
-            moveInch(40,.55);
+            moveInch(41,.55);
             knockSample();
         } else {
             telemetry.addData("tensor","failed");

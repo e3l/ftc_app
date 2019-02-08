@@ -16,7 +16,7 @@ public class DepotAutonomous extends MainAutonomous {
 
         //move to the crater sample and get in position
         turn(LANDER_TO_SAMPLE_START_DEGREES, 1);
-        moveInch(LANDER_TO_SAMPLE_START_INCHES, 0.55);
+        moveInch(LANDER_TO_SAMPLE_START_INCHES + 1, 0.55);
         turn(TURN_TO_SAMPLE_DEGREES, 0.35);
         moveInch(-41,.55);
 
@@ -29,17 +29,18 @@ public class DepotAutonomous extends MainAutonomous {
             turn(-150,.35);
         } else if (goldPosition == 'C') {
             turn(-90, 0.35);
-            moveInch(40, 0.55);
+            moveInch(43, 0.55);
             turn(-140,.35);
         } else if (goldPosition == 'L') {
-            turn(-100,.35);
-            moveInch(40, 0.55);
+            moveInch(10,.55);
             turn(-120,.35);
+            moveInch(48, 0.55);
+            turn(-105,.35);
         }
 
         marker();
 
-        moveInch(DEPOT_TO_CRATER_INCHES, 0.55);
+        moveInch(DEPOT_TO_CRATER_INCHES, 0.75);
         jointExtend();
     }
 }
