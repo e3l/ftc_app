@@ -99,10 +99,11 @@ public class MainTeleOp extends LinearOpMode {
             slow = 1.66;
         }
 
-        rightDriveMotor.setPower(-1 * direction * gamepad1.left_stick_y / slow);
-        leftDriveMotor.setPower(direction * gamepad1.left_stick_y / slow);
-        // leftDrive is -1 due to the fact that the motors are orientated differently.
-
+        if(gamepad1.left_stick_y != 0) {
+            rightDriveMotor.setPower(-1 * direction * gamepad1.left_stick_y / slow);
+            leftDriveMotor.setPower(direction * gamepad1.left_stick_y / slow);
+            // leftDrive is -1 due to the fact that the motors are orientated differently.
+        }
         if (gamepad1.right_stick_x != 0) {
             rightDriveMotor.setPower((-8 * gamepad1.right_stick_x) / slow);
             leftDriveMotor.setPower((-8 * gamepad1.right_stick_x) / slow);
